@@ -1,7 +1,6 @@
-import ReactDOMServer from 'react-dom/server'
-import React from 'react'
+import { prerender } from 'preact-iso'
 import { PageShell } from './PageShell'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject as html, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import logoUrl from './logo.svg'
 import type { PageContext } from './types'
 import type { PageContextBuiltIn } from 'vite-plugin-ssr'
@@ -12,18 +11,20 @@ export const passToClient = ['pageProps', 'urlPathname']
 
 async function render(pageContext: PageContextBuiltIn & PageContext) {
   const { Page, pageProps } = pageContext
-  const pageHtml = ReactDOMServer.renderToString(
+  const pageHtml = await prerender(
     <PageShell pageContext={pageContext}>
       <Page {...pageProps} />
-    </PageShell>,
+    </PageShell>
   )
 
   // See https://vite-plugin-ssr.com/head
   const { documentProps } = pageContext
   const title = (documentProps && documentProps.title) || 'Vite SSR app'
-  const desc = (documentProps && documentProps.description) || 'App using Vite + vite-plugin-ssr'
+  const desc =
+    (documentProps && documentProps.description) ||
+    'App using Vite + vite-plugin-ssr'
 
-  const documentHtml = escapeInject`<!DOCTYPE html>
+  const documentHtml = html`<!DOCTYPE html>
     <html lang="en">
       <head>
         <meta charset="UTF-8" />
@@ -33,7 +34,7 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
         <title>${title}</title>
       </head>
       <body>
-        <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
+        <div id="page-view">${dangerouslySkipEscape(pageHtml.html)}</div>
       </body>
     </html>`
 

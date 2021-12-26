@@ -6,7 +6,9 @@
     "target": "ES2017",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": ["vite/client"],
-    "jsx": "react",
+    "jsx": "preserve",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment",
     "skipLibCheck": true,
     "esModuleInterop": true
   },

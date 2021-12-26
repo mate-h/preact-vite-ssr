@@ -1,5 +1,4 @@
-import ReactDOM from 'react-dom'
-import React from 'react'
+import { hydrate as preactHydrate } from 'preact-iso'
 import { getPage } from 'vite-plugin-ssr/client'
 import { PageShell } from './PageShell'
 import type { PageContext } from './types'
@@ -12,10 +11,10 @@ async function hydrate() {
   // instead of `getPage()`, see https://vite-plugin-ssr.com/useClientRouter
   const pageContext = await getPage<PageContextBuiltInClient & PageContext>()
   const { Page, pageProps } = pageContext
-  ReactDOM.hydrate(
+  preactHydrate(
     <PageShell pageContext={pageContext}>
       <Page {...pageProps} />
     </PageShell>,
-    document.getElementById('page-view'),
+    document.getElementById('page-view')!
   )
 }
