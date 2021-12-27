@@ -1,8 +1,10 @@
 import { hydrate as preactHydrate } from 'preact-iso'
 import { getPage } from 'vite-plugin-ssr/client'
-import { PageShell } from './PageShell'
+import { Layout } from './layout'
 import type { PageContext } from './types'
 import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client'
+import 'virtual:windi.css'
+import './layout.css'
 
 hydrate()
 
@@ -12,9 +14,9 @@ async function hydrate() {
   const pageContext = await getPage<PageContextBuiltInClient & PageContext>()
   const { Page, pageProps } = pageContext
   preactHydrate(
-    <PageShell pageContext={pageContext}>
+    <Layout pageContext={pageContext}>
       <Page {...pageProps} />
-    </PageShell>,
+    </Layout>,
     document.getElementById('page-view')!
   )
 }

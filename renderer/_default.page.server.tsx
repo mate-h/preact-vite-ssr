@@ -1,5 +1,5 @@
 import { prerender } from 'preact-iso'
-import { PageShell } from './PageShell'
+import { Layout } from './layout'
 import { escapeInject as html, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import logoUrl from './logo.svg'
 import type { PageContext } from './types'
@@ -9,12 +9,13 @@ export { render }
 // See https://vite-plugin-ssr.com/data-fetching
 export const passToClient = ['pageProps', 'urlPathname']
 
+
 async function render(pageContext: PageContextBuiltIn & PageContext) {
   const { Page, pageProps } = pageContext
   const pageHtml = await prerender(
-    <PageShell pageContext={pageContext}>
+    <Layout pageContext={pageContext}>
       <Page {...pageProps} />
-    </PageShell>
+    </Layout>
   )
 
   // See https://vite-plugin-ssr.com/head

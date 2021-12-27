@@ -1,13 +1,12 @@
 import logo from './logo.svg'
 import { PageContextProvider } from './usePageContext'
 import type { PageContext } from './types'
-import './PageShell.css'
-import { Link } from './Link'
+import { Link } from './link'
 import type { ComponentChildren } from 'preact'
 
-export { PageShell }
+export { Layout }
 
-function PageShell({
+function Layout({
   children,
   pageContext,
 }: {
@@ -16,7 +15,7 @@ function PageShell({
 }) {
   return (
     <PageContextProvider pageContext={pageContext}>
-      <Layout>
+      <Container>
         <Sidebar>
           <Logo />
           <Link className="navitem" href="/">
@@ -27,12 +26,12 @@ function PageShell({
           </Link>
         </Sidebar>
         <Content>{children}</Content>
-      </Layout>
+      </Container>
     </PageContextProvider>
   )
 }
 
-function Layout({ children }: { children: ComponentChildren }) {
+function Container({ children }: { children: ComponentChildren }) {
   return (
     <div
       style={{

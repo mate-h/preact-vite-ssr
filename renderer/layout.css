@@ -1,0 +1,9 @@
+/* This CSS is common to all pages */
+
+.navitem {
+  @apply px-4 py-2;
+}
+
+.navitem.is-active {
+  @apply bg-gray-200;
+}
