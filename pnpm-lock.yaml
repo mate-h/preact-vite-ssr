@@ -11,6 +11,7 @@ specifiers:
   preact: ^10.6.4
   preact-iso: ^2.3.0
   preact-render-to-string: ^5.1.19
+  storeon: ^3.1.4
   ts-node: ^10.4.0
   typescript: ^4.5.4
   vite: ^2.7.2
@@ -29,6 +30,7 @@ dependencies:
   preact: 10.6.4
   preact-iso: 2.3.0_26ed57f0a92fea1141353e0a8157fcb1
   preact-render-to-string: 5.1.19_preact@10.6.4
+  storeon: 3.1.4_preact@10.6.4
   ts-node: 10.4.0_00264fd83560919cd06c986889baae0a
   typescript: 4.5.4
   vite: 2.7.7
@@ -2155,6 +2157,21 @@ packages:
   /statuses/1.5.0:
     resolution: {integrity: sha1-Fhx9rBd2Wf2YEfQ3cfqZOBR4Yow=}
     engines: {node: '>= 0.6'}
+    dev: false
+
+  /storeon/3.1.4_preact@10.6.4:
+    resolution: {integrity: sha512-GUSyCevVP00T5b5/Z05ZGkrJFh4IbXjCAl+R27pBslamFLS/qSxJoSwYIGbIZOjujRAgUiWIzPDZP6Ma3vSR9Q==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      preact: '>=10.0.0'
+      react: '>=16.8.0'
+    peerDependenciesMeta:
+      preact:
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      preact: 10.6.4
     dev: false
 
   /string-width/4.2.3:
