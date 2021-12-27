@@ -7,3 +7,30 @@
 .navitem.is-active {
   @apply bg-gray-200;
 }
+
+.input {
+  @apply appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none sm:text-sm;
+}
+
+.input-primary {
+  @apply focus:ring-indigo-500 focus:border-indigo-500;
+}
+
+.input:-webkit-autofill::first-line {
+  @apply font-sans;
+  @apply text-base;
+}
+
+@media (min-width: 640px) {
+  .input:-webkit-autofill::first-line {
+    @apply text-sm;
+  }
+}
+
+.btn {
+  @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 cursor-pointer;
+}
+
+.btn-primary {
+  @apply text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500;
+}

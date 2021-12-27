@@ -3,8 +3,8 @@ import { getPage } from 'vite-plugin-ssr/client'
 import { Layout } from './layout'
 import type { PageContext } from './types'
 import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client'
-import 'virtual:windi.css'
 import './layout.css'
+import './firebase-client'
 
 hydrate()
 

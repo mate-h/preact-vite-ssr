@@ -13,6 +13,7 @@
     "@types/node": "^16.11.13",
     "cross-env": "^7.0.3",
     "express": "^4.17.1",
+    "firebase": "^9.6.1",
     "preact": "^10.6.4",
     "preact-iso": "^2.3.0",
     "preact-render-to-string": "^5.1.19",
@@ -22,10 +23,5 @@
     "vite-plugin-ssr": "^0.3.41",
     "vite-plugin-windicss": "^1.6.1",
     "windicss": "^3.4.0"
-  },
-  "devDependencies": {
-    "autoprefixer": "^10.4.0",
-    "postcss": "^8.4.5",
-    "tailwindcss": "^3.0.7"
   }
 }
