@@ -36,15 +36,13 @@ export function save(paths: StateKeys[], config?: Config) {
     function getConfig(path: StateKeys) {
       const {
         collection = path,
-        realtime = false,
+        realtime = true,
       } = config?.[path] || {};
       return { collection, realtime };
     }
 
-    const dummyId = id();
-
     store.on("@init", (init) => {
-      const userId = init.pageProps.user?.uid || dummyId;
+      const userId = init.pageProps.user?.uid || init.id;
       let initStates = paths.reduce((acc, key) => {
         let initValue = init[key];
         if (initValue && typeof initValue === "object") {
@@ -219,7 +217,7 @@ export function save(paths: StateKeys[], config?: Config) {
     });
 
     store.on("@init", async (init) => {
-      const userId = init.pageProps.user?.uid || dummyId;
+      const userId = init.pageProps.user?.uid || init.id;
       if (!import.meta.env.SSR && import.meta.env.VITE_ENV_SCRIPT !== "dev") {
         const { onSnapshot, collection, where, query } = await import(
           "firebase/firestore"

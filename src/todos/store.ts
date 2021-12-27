@@ -1,23 +1,24 @@
-import { set } from "lodash"
-import { Module } from "../store"
+import { set } from 'lodash'
+import { Module } from '../store'
 
 type TodoItem = {
-  name: string;
-  done: boolean;
+  id: string
+  name: string
+  done: boolean
 }
 
 export type Events = {
-  "todos.set": Record<string, TodoItem>;
+  'todos.set': Record<string, TodoItem>
 }
 
 export type State = {
-  todos: Record<string, TodoItem>;
+  todos: Record<string, TodoItem>
 }
 
 export const module: Module = (store) => {
-  store.on("@init", (init) => {
+  store.on('@init', (init) => {
     // let todos = init.pageProps.todos || {};
-    return { todos: {} };
-  });
-  store.on("todos.set",(state, event) => set(state, "todos", event));
+    return { todos: {} }
+  })
+  store.on('todos.set', (state, event) => set(state, 'todos', event))
 }

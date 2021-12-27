@@ -5,11 +5,15 @@ type ServerState = {
   pageProps: PageProps
 }
 
+type ClientState = {
+  id: string
+}
+
 // modules
 import { module as m1, State as S1, Events as E1 } from './todos/store'
 import { save, State as S2, Events as E2 } from './save'
 
-type State = ServerState & S1 & S2
+type State = ServerState & ClientState & S1 & S2
 
 type Events = E1 & E2
 
@@ -17,6 +21,8 @@ const modules = [m1]
 
 import { createStoreon, StoreonModule, StoreonStore } from 'storeon'
 import { useStoreon } from 'storeon/preact'
+import { persistState } from '@storeon/localstorage'
+import { id } from './utils'
 
 export type Module = StoreonModule<State & ServerState, Events>
 
@@ -32,12 +38,25 @@ export function createStore(pageContext: PageContext) {
         ;(window as any).state = state
       }
     })
+    store.on('@dispatch', (state, [event, data]) => {
+      const skip: string[] = ["@init", "@changed"];
+      if (process.env.NODE_ENV === "development" && !skip.includes(event)) {
+      console.log(`[storeon] ${ event }`)
+      }
+    })
   }
-  store = createStoreon<State, Events>([
-    initModule,
-    ...modules,
-    save(['todos']),
-  ])
+  const clientModule: Module = (store) => {
+    store.on('@init', (init) => {
+      const uid = id()
+      return { id: uid }
+    })
+  }
+  let m: Module[] = []
+  if (!import.meta.env.SSR) {
+    m = m.concat(clientModule, persistState(['id']))
+  }
+  m = m.concat(initModule, ...modules, save(['todos']))
+  store = createStoreon<State, Events>(m)
   return store
 }
 

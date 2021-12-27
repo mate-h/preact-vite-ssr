@@ -29,8 +29,8 @@ function Layout({
             <Link className="navitem" href="/signin">
               Sign In
             </Link>
-            <Link className="navitem" href="/about">
-              About
+            <Link className="navitem" href="/todos">
+              Todos
             </Link>
           </aside>
           <main class="p-6 min-h-screen border-l border-gray-200 flex-grow">

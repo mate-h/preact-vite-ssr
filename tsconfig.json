@@ -10,7 +10,10 @@
     "jsxFactory": "h",
     "jsxFragmentFactory": "Fragment",
     "skipLibCheck": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "*": ["./src/*"]
+    }
   },
   "ts-node": {
     "transpileOnly": true,

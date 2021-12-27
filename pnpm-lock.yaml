@@ -3,6 +3,7 @@ lockfileVersion: 5.3
 specifiers:
   '@babel/core': ^7.16.5
   '@preact/preset-vite': ^2.1.6
+  '@storeon/localstorage': ^1.4.0
   '@types/express': ^4.17.13
   '@types/lodash': ^4.14.178
   '@types/node': ^16.11.13
@@ -24,6 +25,7 @@ specifiers:
 dependencies:
   '@babel/core': 7.16.5
   '@preact/preset-vite': 2.1.6_ca63641247837199c1cd700061320c37
+  '@storeon/localstorage': 1.4.0
   '@types/express': 4.17.13
   '@types/lodash': 4.14.178
   '@types/node': 16.11.17
@@ -882,6 +884,10 @@ packages:
     dependencies:
       estree-walker: 2.0.2
       picomatch: 2.3.0
+    dev: false
+
+  /@storeon/localstorage/1.4.0:
+    resolution: {integrity: sha512-WHYs8AGEI7RrFkhToSj8UX/OqkCBRp09f9BJQB7Dggth075qI+XsoFB4g/Y0vIL+wuZgznyAmdGB+J7zUu2dmA==}
     dev: false
 
   /@tsconfig/node10/1.0.8:
