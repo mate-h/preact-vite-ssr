@@ -4,10 +4,12 @@ specifiers:
   '@babel/core': ^7.16.5
   '@preact/preset-vite': ^2.1.6
   '@types/express': ^4.17.13
+  '@types/lodash': ^4.14.178
   '@types/node': ^16.11.13
   cross-env: ^7.0.3
   express: ^4.17.1
   firebase: ^9.6.1
+  lodash: ^4.17.21
   preact: ^10.6.4
   preact-iso: ^2.3.0
   preact-render-to-string: ^5.1.19
@@ -23,10 +25,12 @@ dependencies:
   '@babel/core': 7.16.5
   '@preact/preset-vite': 2.1.6_ca63641247837199c1cd700061320c37
   '@types/express': 4.17.13
+  '@types/lodash': 4.14.178
   '@types/node': 16.11.17
   cross-env: 7.0.3
   express: 4.17.2
   firebase: 9.6.1
+  lodash: 4.17.21
   preact: 10.6.4
   preact-iso: 2.3.0_26ed57f0a92fea1141353e0a8157fcb1
   preact-render-to-string: 5.1.19_preact@10.6.4
@@ -926,6 +930,10 @@ packages:
       '@types/serve-static': 1.13.10
     dev: false
 
+  /@types/lodash/4.14.178:
+    resolution: {integrity: sha512-0d5Wd09ItQWH1qFbEyQ7oTQ3GZrMfth5JkbN3EvTKLXcHLRDSXeLnlvlOn0wvxVIwK5o2M8JzP/OWz7T3NRsbw==}
+    dev: false
+
   /@types/long/4.0.1:
     resolution: {integrity: sha512-5tXH6Bx/kNGd3MgffdmP4dy2Z+G4eaXw0SE81Tq3BNadtnMR5/ySMzX4SLEzHJzSmPNn4HIdpQsBvXMUykr58w==}
     dev: false
@@ -1741,6 +1749,10 @@ packages:
 
   /lodash.camelcase/4.3.0:
     resolution: {integrity: sha1-soqmKIorn8ZRA1x3EfZathkDMaY=}
+    dev: false
+
+  /lodash/4.17.21:
+    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
     dev: false
 
   /long/4.0.0:
