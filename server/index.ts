@@ -1,5 +1,8 @@
 import express from 'express'
+import { Locals, PageContext } from '../src/types'
 import { createPageRenderer } from 'vite-plugin-ssr'
+import './firebase-admin'
+import { client } from './middleware/client'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const root = `${__dirname}/..`
@@ -21,11 +24,17 @@ async function startServer() {
     app.use(viteDevServer.middlewares)
   }
 
+  // middleware
+  app.use(client);
+
   const renderPage = createPageRenderer({ viteDevServer, isProduction, root })
   app.get('*', async (req, res, next) => {
+    // remove null prototype
+    const {...locals} = res.locals as Locals;
     const url = req.originalUrl
     const pageContextInit = {
       url,
+      locals,
     }
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext

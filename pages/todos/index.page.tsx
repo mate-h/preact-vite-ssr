@@ -1,6 +1,7 @@
-import { set } from 'lodash'
+import { debounce, omit, set } from 'lodash'
 import { useState } from 'preact/hooks'
 import { useStore } from 'store'
+import { SyncedInput } from 'lib/synced-input'
 import { id } from 'utils'
 
 export { Page }
@@ -24,7 +25,13 @@ function Page() {
   return (
     <>
       <h1>Todos</h1>
-      <div class="flex">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          add()
+        }}
+        class="flex"
+      >
         <input
           placeholder="Todo name"
           type="text"
@@ -32,23 +39,38 @@ function Page() {
           value={text}
           onInput={(e) => setText((e.target as HTMLInputElement).value)}
         />
-        <button onClick={add} class="btn btn-primary ml-4">
+        <button type="submit" onClick={add} class="btn btn-primary ml-4">
           Add Todo
         </button>
-      </div>
+      </form>
       <ul class="mt-6">
-        {Object.values(todos ||{}).map((todo) => (
-          <li class="flex items-center">
-            <input
-              type="checkbox"
-              checked={todo.done}
-              onChange={() =>
-                dispatch('todos.set', set(todos, todo.id, { done: !todo.done }))
-              }
-            />
-            <span class="ml-4">{todo.name}</span>
-          </li>
-        ))}
+        {Object.values(todos || {}).map((todo) => {
+          return (
+            <li key={todo.id} class="flex items-center">
+              <input
+                type="checkbox"
+                checked={todo.done}
+                onChange={() =>
+                  dispatch(
+                    'todos.set',
+                    set(todos, [todo.id, 'done'], !todo.done)
+                  )
+                }
+              />
+              <SyncedInput keyPath="todos" id={todo.id} propPath={['name']} />
+              <button
+                onClick={() => {
+                  if (confirm('are you sure?')) {
+                    dispatch('todos.set', omit(todos, todo.id))
+                  }
+                }}
+                class="btn"
+              >
+                Remove
+              </button>
+            </li>
+          )
+        })}
       </ul>
     </>
   )

@@ -17,8 +17,7 @@ export type State = {
 
 export const module: Module = (store) => {
   store.on('@init', (init) => {
-    // let todos = init.pageProps.todos || {};
-    return { todos: {} }
+    return { todos: init.todos || {} }
   })
   store.on('todos.set', (state, event) => set(state, 'todos', event))
 }

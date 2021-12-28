@@ -15,6 +15,7 @@ const viteConfig: UserConfig = {
     alias: {
       'store': path.resolve(__dirname, './src/store'),
       'utils': path.resolve(__dirname, './src/utils'),
+      'lib': path.resolve(__dirname, './src/lib'),
     }
   },
   build: {

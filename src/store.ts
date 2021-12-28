@@ -1,37 +1,32 @@
-import type { PageContext, PageProps } from './types'
-
-type ServerState = {
-  pageContext: PageContext
-  pageProps: PageProps
-}
-
-type ClientState = {
-  id: string
-}
+import type { Locals, PageContext } from './types'
 
 // modules
+import { save, State as S0, Events as E0 } from './save'
 import { module as m1, State as S1, Events as E1 } from './todos/store'
-import { save, State as S2, Events as E2 } from './save'
+import { module as m2, State as S2, Events as E2 } from './lib/synced-input'
 
-type State = ServerState & ClientState & S1 & S2
+export type State = Locals & S0 & S1 & S2
 
-type Events = E1 & E2
+export type DefaultEvents = {
+  "state.set": { path: StateKeys; value: any }
+}
 
-const modules = [m1]
+type Events = DefaultEvents & E0 & E1 & E2 
+
+const modules = [m1, m2]
 
 import { createStoreon, StoreonModule, StoreonStore } from 'storeon'
 import { useStoreon } from 'storeon/preact'
-import { persistState } from '@storeon/localstorage'
-import { id } from './utils'
+import { set } from 'lodash'
 
-export type Module = StoreonModule<State & ServerState, Events>
+export type Module = StoreonModule<State, Events>
 
 let store: StoreonStore<State, Events>
 
 export function createStore(pageContext: PageContext) {
   const initModule: Module = (store) => {
     store.on('@init', (init) => {
-      return { pageContext, pageProps: pageContext.pageProps || {} }
+      return { ...pageContext.pageProps, ...pageContext.locals }
     })
     store.on('@changed', (state) => {
       if (!import.meta.env.SSR) {
@@ -39,23 +34,17 @@ export function createStore(pageContext: PageContext) {
       }
     })
     store.on('@dispatch', (state, [event, data]) => {
-      const skip: string[] = ["@init", "@changed"];
-      if (process.env.NODE_ENV === "development" && !skip.includes(event)) {
-      console.log(`[storeon] ${ event }`)
+      const skip: string[] = ['@init', '@changed']
+      if (process.env.NODE_ENV === 'development' && !skip.includes(event)) {
+        console.log(`[storeon] ${event}`)
       }
     })
+
+    store.on('state.set', (state, { path, value }) => {
+      return set(state, path, value)
+    });
   }
-  const clientModule: Module = (store) => {
-    store.on('@init', (init) => {
-      const uid = id()
-      return { id: uid }
-    })
-  }
-  let m: Module[] = []
-  if (!import.meta.env.SSR) {
-    m = m.concat(clientModule, persistState(['id']))
-  }
-  m = m.concat(initModule, ...modules, save(['todos']))
+  const m: Module[] = [initModule, ...modules, save(['todos'])]
   store = createStoreon<State, Events>(m)
   return store
 }
