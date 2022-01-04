@@ -1,9 +1,9 @@
 // server side page module extends a module that is compatible with rendering nodes
 // by re-using common code
 
-import { ComponentChildren, createElement } from "preact"
-import { useStore } from "store"
-import { NodeBase, NodeRef } from "../../src/node/store";
+import { ComponentChildren, createElement } from 'preact'
+import { useStore } from 'store'
+import { Dispatcher, NodeBase, NodeRef } from '../../src/node/store'
 
 export { Page }
 
@@ -19,27 +19,53 @@ function Node(props: NodeProps): any {
   // if node is primitive, render it
   if (node && (node as NodeBase).type) {
     const n = node as NodeBase
+    let p = n.props
+    let h: Record<string, any> = {}
+
+    // transform props and extract event handlers
+    if (p !== null) {
+      Object.keys(p).forEach((k) => {
+        if ((p![k] as Dispatcher).event) {
+          // must be of type Dispatcher
+          const d = p![k] as Dispatcher
+          h[k] = (e: Event) => {
+            // obtain value / checked from event
+            let v = (e.target as any).value
+            if (v === undefined) {
+              v = (e.target as any).checked
+            }
+            dispatch(d.event as any, {
+              ...d.data,
+              value: v,
+            })
+          }
+        }
+      })
+    }
+
     return createElement(
       n.type,
-      n.props,
-      (n.children || []).map(child => {
+      {
+        ref: (node: any) => {
+          dispatch('nodes.self', { id, self: node })
+        },
+        key: id,
+        ...((n.props as any) || {}),
+        ...h,
+      },
+      (n.children || []).map((child) => {
         if (child && (child as NodeRef).ref) {
           const n = child as NodeRef
           return Node({ id: n.ref })
         }
         return child
       })
-    );
+    )
   }
   return <>{node}</>
 }
 
 function Page() {
-  const { dispatch, nodes, rootNode } = useStore('nodes', 'rootNode')
-  return (
-    <div>
-      <h1>Nodes</h1>
-      <Node id={rootNode} />
-    </div>
-  )
+  const { parent } = useStore('parent')
+  return <>{parent && <Node id={parent.ref} />}</>
 }

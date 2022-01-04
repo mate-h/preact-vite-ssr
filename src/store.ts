@@ -19,6 +19,8 @@ const modules = [m1, m2, m3]
 import { createStoreon, StoreonModule, StoreonStore } from 'storeon'
 import { useStoreon } from 'storeon/preact'
 import { set } from 'lodash'
+import { persistState } from '@storeon/localstorage';
+import {id} from './utils';
 
 export type Module = StoreonModule<State, Events>
 
@@ -35,7 +37,7 @@ export function createStore(pageContext: PageContext) {
       }
     })
     store.on('@dispatch', (state, [event, data]) => {
-      const skip: string[] = ['@init', '@changed']
+      const skip: string[] = ['@init', '@changed', 'nodes.self']
       if (process.env.NODE_ENV === 'development' && !skip.includes(event)) {
         console.log(`[storeon] ${event}`)
       }
@@ -45,7 +47,11 @@ export function createStore(pageContext: PageContext) {
       return set(state, path, value)
     });
   }
-  const m: Module[] = [initModule, ...modules, save(['todos'])]
+  let m: Module[] = [initModule, ...modules, save(['todos'])]
+  if (!import.meta.env.SSR) {
+    const persistModule = persistState(['nodes', 'parent']);
+    m = [persistModule, ...m]
+  }
   store = createStoreon<State, Events>(m)
   return store
 }
