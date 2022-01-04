@@ -36,7 +36,7 @@ function Layout({
               Nodes
             </Link>
           </aside>
-          <main class="p-6 min-h-screen border-l border-gray-200 flex-grow">
+          <main class="min-h-screen border-l border-gray-200 flex-grow">
             {children}
           </main>
         </div>

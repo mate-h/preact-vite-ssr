@@ -3,7 +3,7 @@
 
 import { ComponentChildren, createElement } from 'preact'
 import { useStore } from 'store'
-import { Dispatcher, NodeBase, NodeRef } from '../../src/node/store'
+import { Dispatcher, NodeBase, NodeRef, NodeRoot } from './store'
 
 export { Page }
 
@@ -62,10 +62,50 @@ function Node(props: NodeProps): any {
       })
     )
   }
+  // root node
+  if (node && (node as NodeRoot).children) {
+    const n = node as NodeRoot
+    return (
+      <>
+        {n.children.map((child) => {
+          if (child && (child as NodeRef).ref) {
+            const n = child as NodeRef
+            return Node({ id: n.ref })
+          }
+          return child
+        })}
+      </>
+    )
+  }
   return <>{node}</>
 }
 
 function Page() {
-  const { parent } = useStore('parent')
-  return <>{parent && <Node id={parent.ref} />}</>
+  const { dispatch, root, components } = useStore('root', 'components')
+  return (
+    <main>
+      <div class="px-4 py-6 bg-[#121212] text-white">
+        <h2 class="text-xl font-medium">Components</h2>
+        <ul class="mt-4">
+          {Object.keys(components).map((id) => {
+            function addComponent() {
+              // add at root
+              dispatch('nodes.add', {
+                parent: { ref: root.id },
+                component: { ref: id },
+              })
+            }
+            return (
+              <li>
+                <button onClick={addComponent} class="text-white text-sm font-mono focus:outline-none text-opacity-60 hover:text-opacity-100 px-2 rounded-md">{id}</button>
+              </li>
+            )
+          })}
+        </ul>
+      </div>
+      <div class="p-6 min-h-screen border-l border-gray-200 flex-grow">
+        <Node id={root.id} />
+      </div>
+    </main>
+  )
 }

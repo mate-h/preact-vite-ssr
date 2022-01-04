@@ -4,7 +4,7 @@ import type { Locals, PageContext } from './types'
 import { save, State as S0, Events as E0 } from './save'
 import { module as m1, State as S1, Events as E1 } from './todos/store'
 import { module as m2, State as S2, Events as E2 } from './lib/synced-input'
-import { module as m3, State as S3, Events as E3 } from './node/store'
+import { module as m3, State as S3, Events as E3 } from '../pages/nodes/store'
 
 export type State = Locals & S0 & S1 & S2 & S3
 
@@ -20,7 +20,6 @@ import { createStoreon, StoreonModule, StoreonStore } from 'storeon'
 import { useStoreon } from 'storeon/preact'
 import { set } from 'lodash'
 import { persistState } from '@storeon/localstorage';
-import {id} from './utils';
 
 export type Module = StoreonModule<State, Events>
 
@@ -49,7 +48,7 @@ export function createStore(pageContext: PageContext) {
   }
   let m: Module[] = [initModule, ...modules, save(['todos'])]
   if (!import.meta.env.SSR) {
-    const persistModule = persistState(['nodes', 'parent']);
+    const persistModule = persistState(['nodes', 'root']);
     m = [persistModule, ...m]
   }
   store = createStoreon<State, Events>(m)

@@ -1,13 +1,14 @@
 import { merge, omit, set } from 'lodash'
-import { Module } from '../store'
+import { Module } from 'store'
 import { deepClone, id } from 'utils'
+import * as components from './components'
 
 export type Dispatcher = {
   event: string
   data?: any
 }
 
-type EventKeys = keyof JSX.DOMAttributes<EventTarget>;
+type EventKeys = keyof JSX.DOMAttributes<EventTarget>
 
 export type NodeBase<T = any> = {
   id: string
@@ -40,12 +41,31 @@ export type NodeChild =
 
 export type NodeType = NodeBase | NodeChild
 
+/** Self-contained, serializable node component module */
+export type NodeComponent = {
+  /** Root node of current module */
+  child: NodeRef
+  nodes: Record<string, NodeType>
+}
+
+export type NodeComponentRef = {
+  /** unique name or id */
+  ref: string
+}
+
+/** Equivalent to "Fragment" */
+export type NodeRoot = {
+  id: string
+  children: NodeChild[]
+}
+
 export type Events = {
   'nodes.set': Record<string, NodeType>
+  /** Instantiates a new node at the parent node */
   'nodes.add': {
+    /** Reference to parent node */
     parent: NodeRef
-    child: NodeRef
-    nodes: Record<string, NodeType>
+    component: NodeComponentRef
   }
   'nodes.delete': { id: string }
   'nodes.update': { path: string | string[]; value: any }
@@ -54,131 +74,35 @@ export type Events = {
 
 export type State = {
   nodes: Record<string, NodeType>
+  components: Record<string, NodeComponent>
   dom: Record<string, HTMLElement | null>
-  parent?: NodeRef
+  root: NodeRoot
 }
 
 export const module: Module = (store) => {
   store.on('@init', (init) => {
-    // return { nodes: init.nodes || {}, dom: {} };
-    const u1 = id()
-    const u2 = id()
-    const u3 = id()
-    const u4 = id()
-    const u5 = id()
-    const n1 = id()
-    const n2 = id()
-    const n3 = id()
-    const n4 = id()
-    return {
-      parent: { ref: u1 },
-      nodes: {
-        [u1]: {
-          id: u1,
-          type: 'div',
-          props: {},
-          children: [{ ref: u2 }, { ref: u3 }, { ref: u4 }, { ref: u5 }],
-        },
-        [u2]: {
-          id: u2,
-          type: 'p',
-          props: {
-            class: 'uppercase tracking-wide text-xs text-gray-500',
-          },
-          children: ['Hello world'],
-        },
-        [u3]: {
-          id: u3,
-          type: 'p',
-          props: {
-            class: 'text-2xl font-medium',
-          },
-          children: ['Title test'],
-        },
-        [u4]: {
-          id: u4,
-          type: 'button',
-          props: {
-            class:
-              'mt-4 bg-blue-500 hover:bg-blue-700 text-sm text-white font-medium py-1 px-4 rounded-md',
-            onClick: {
-              event: 'nodes.add',
-              data: {
-                parent: { ref: u5 },
-                child: { ref: n1 },
-                nodes: {
-                  [n1]: {
-                    type: 'li',
-                    props: {
-                      class: 'text-sm flex group py-1',
-                    },
-                    children: [{ ref: n2 }, { ref: n3 }],
-                  },
-                  [n2]: {
-                    id: n2,
-                    type: 'p',
-                    props: {
-                      class: 'flex-grow',
-                    },
-                    children: [{ ref: n4 }],
-                  },
-                  [n3]: {
-                    id: n3,
-                    type: 'button',
-                    props: {
-                      class:
-                        'font-medium opacity-0 group-hover:opacity-100 px-2 rounded-md',
-                      onClick: {
-                        event: 'nodes.delete',
-                        data: { id: n1 },
-                      },
-                    },
-                    children: ['Delete'],
-                  },
-                  [n4]: {
-                    id: n4,
-                    type: 'input',
-                    props: {
-                      class: 'bg-transparent w-full max-w-md rounded-md',
-                      type: 'text',
-                      placeholder: 'Enter text',
-                      onInput: {
-                        event: 'nodes.update',
-                        data: { path: [n4, 'props', 'value'] },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-          children: ['Add'],
-        },
-        [u5]: {
-          id: u5,
-          type: 'ul',
-          props: {
-            class: 'mt-4',
-          },
-          children: [],
-        },
-      },
-    }
+    const root = { id: id(), children: [] }
+    const nodes = merge(init.nodes || {}, { [root.id]: root })
+    return { root: init.root || root, nodes, dom: {}, components: deepClone(components) }
   })
   store.on('nodes.update', (state, { path, value }) => ({
     nodes: set(state.nodes, path, value),
   }))
   store.on('nodes.add', (state, event) => {
-    let { child, parent, nodes: newNodes } = event
-    let { nodes } = state
+    let {
+      parent,
+      component: { ref: componentRef },
+    } = event
+    let { nodes, components } = state
+    const { child, nodes: newNodes } = components[componentRef]
 
-    let newN = deepClone(newNodes);
+    let newN = deepClone(newNodes)
 
     // generate new ids for new nodes
     const idMap = Object.fromEntries(
       Object.keys(newN).map((idx) => [idx, id()])
     )
-    
+
     // replace any occurences of the old id with the new id
     const oldKeys = Object.keys(idMap)
     function traverse(o: any): any {
@@ -204,7 +128,6 @@ export const module: Module = (store) => {
       return o
     }
     newN = traverse(newN)
-
 
     // append new node
     nodes = merge(nodes, newN)
