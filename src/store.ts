@@ -4,16 +4,17 @@ import type { Locals, PageContext } from './types'
 import { save, State as S0, Events as E0 } from './save'
 import { module as m1, State as S1, Events as E1 } from './todos/store'
 import { module as m2, State as S2, Events as E2 } from './lib/synced-input'
+import { module as m3, State as S3, Events as E3 } from './node/store'
 
-export type State = Locals & S0 & S1 & S2
+export type State = Locals & S0 & S1 & S2 & S3
 
 export type DefaultEvents = {
   "state.set": { path: StateKeys; value: any }
 }
 
-type Events = DefaultEvents & E0 & E1 & E2 
+type Events = DefaultEvents & E0 & E1 & E2 & E3
 
-const modules = [m1, m2]
+const modules = [m1, m2, m3]
 
 import { createStoreon, StoreonModule, StoreonStore } from 'storeon'
 import { useStoreon } from 'storeon/preact'
