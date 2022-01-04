@@ -8,23 +8,9 @@ export const TodoList: NodeComponent = {
     '1': {
       type: 'div',
       props: {},
-      children: [{ ref: '2' }, { ref: '3' }, { ref: '4' }, { ref: '5' }],
+      children: [{ ref: '2' }, { ref: '3' }],
     },
     '2': {
-      type: 'p',
-      props: {
-        class: 'uppercase tracking-wide text-xs text-gray-500',
-      },
-      children: ['Hello world'],
-    },
-    '3': {
-      type: 'p',
-      props: {
-        class: 'text-2xl font-medium',
-      },
-      children: ['Title test'],
-    },
-    '4': {
       type: 'button',
       props: {
         class:
@@ -37,9 +23,9 @@ export const TodoList: NodeComponent = {
           },
         },
       },
-      children: ['Add'],
+      children: ['Add Todo'],
     },
-    '5': {
+    '3': {
       type: 'ul',
       props: {
         class: 'mt-4',
